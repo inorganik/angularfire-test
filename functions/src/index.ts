@@ -6,3 +6,7 @@ import * as functions from 'firebase-functions';
 // export const helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
+
+export const universal = functions.https.onRequest((request, response) => {
+  require(`${process.cwd()}/dist/angularfire-test-webpack/server`).app(request, response);
+});
