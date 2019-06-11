@@ -5,12 +5,13 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: '',
-    authDomain: '',
-    databaseURL: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: ''
+    apiKey: 'AIzaSyBGL2jBsqseN3B8KwrOm4cduXSzxjkF2DQ',
+    authDomain: 'hometowns-angularfire.firebaseapp.com',
+    databaseURL: 'https://hometowns-angularfire.firebaseio.com',
+    projectId: 'hometowns-angularfire',
+    storageBucket: 'hometowns-angularfire.appspot.com',
+    messagingSenderId: '487411233540',
+    appId: '1:487411233540:web:a1949502f2b4c03b'
   }
 };
 
