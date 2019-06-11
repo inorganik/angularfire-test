@@ -7,8 +7,8 @@ import { environment } from '../environments/environment';
 
 @NgModule({
   imports: [
-    BrowserModule,
-    AngularFireModule.initializeApp(environment.firebase, 'app-test-name'),
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    AngularFireModule.initializeApp(environment.firebase, 'angularfire-test'),
     AngularFireAuthModule,
   ],
   declarations: [ AppComponent ],
