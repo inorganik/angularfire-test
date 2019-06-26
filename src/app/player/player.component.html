@@ -1,0 +1,8 @@
+<ng-container *ngIf="player$ | async as player">
+  <h3>{{ player.name }}</h3>
+  <ul>
+    <li>speed: {{ player.speed }}</li>
+    <li>acceleration: {{ player.acceleration }}</li>
+  </ul>
+</ng-container>
+<p *ngIf="error" style="color: red">{{ error }}</p>

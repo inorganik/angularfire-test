@@ -1,0 +1,14 @@
+<div *ngIf="afAuth.user | async as user; else showLogin">
+  <h1>Hello {{ user.displayName }}!</h1>
+  <button (click)="logout()">Logout</button>
+</div>
+<ng-template #showLogin>
+  <p>Please login.</p>
+  <button (click)="login()">Login with Google</button>
+</ng-template>
+<p>Choose a player:</p>
+<ul>
+  <li><a routerLink="1">Mario</a></li>
+  <li><a routerLink="2">Yoshi</a></li>
+  <li><a routerLink="3">Bowser</a></li>
+</ul>
