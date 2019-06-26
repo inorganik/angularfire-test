@@ -3,6 +3,7 @@
   <ul>
     <li>speed: {{ player.speed }}</li>
     <li>acceleration: {{ player.acceleration }}</li>
+    <li *ngIf="track$ | async as track">favorite track: {{ track.name }}</li>
   </ul>
 </ng-container>
 <p *ngIf="error" style="color: red">{{ error }}</p>

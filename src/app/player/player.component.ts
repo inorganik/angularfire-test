@@ -10,9 +10,16 @@ export interface Player {
   name: string;
   speed: 'fast' | 'medium' | 'slow';
   acceleration: 'fast' | 'medium' | 'slow';
+  favoriteTrack: number;
+}
+
+export interface Track {
+  id: number;
+  name: string;
 }
 
 const PLAYER_STATE = makeStateKey<Player>('player');
+const TRACK_STATE = makeStateKey<Track>('track');
 
 @Component({
   selector: 'app-player',
@@ -20,7 +27,8 @@ const PLAYER_STATE = makeStateKey<Player>('player');
 })
 export class PlayerComponent implements OnInit {
 
-  player$: Observable<any>;
+  player$: Observable<Player>;
+  track$: Observable<Track>;
   error = '';
 
   constructor(
@@ -36,13 +44,13 @@ export class PlayerComponent implements OnInit {
         const id = parseFloat(params.get('id'));
         if (this.transferState.hasKey(PLAYER_STATE)) {
           // check if transfer state already looked up player
-          console.log('data from transfer state');
+          console.log('data from transfer state for player');
           const player = this.transferState.get<Player>(PLAYER_STATE, null);
           this.transferState.remove(PLAYER_STATE);
           return of(player);
         } else {
           // lookup player
-          console.log('data re-fetched');
+          console.log('fetch data');
           return of(this.lookupPlayer(id));
         }
       }),
@@ -57,6 +65,28 @@ export class PlayerComponent implements OnInit {
         }
       })
     );
+
+    this.track$ = this.player$.pipe(
+      switchMap(player => {
+        if (this.transferState.hasKey(TRACK_STATE)) {
+          const track = this.transferState.get<Track>(TRACK_STATE, null);
+          this.transferState.remove(TRACK_STATE);
+          return of(track);
+        } else {
+          return of(this.lookupTrack(player));
+        }
+      }),
+      tap((track: Track) => {
+        if (!track) {
+          this.error = 'Track not found';
+        } else {
+          if (isPlatformServer(this.platformId)) {
+            console.log('SERVER: set transfer state for track');
+            this.transferState.set(TRACK_STATE, track);
+          }
+        }
+      })
+    )
   }
 
   lookupPlayer(id: number): Player {
@@ -64,27 +94,39 @@ export class PlayerComponent implements OnInit {
       case 1:
         return {
           id: 1,
-          name: 'Mario',
+          name: 'Mario 👲🏻',
           speed: 'medium',
-          acceleration: 'medium'
+          acceleration: 'medium',
+          favoriteTrack: 1
         };
       case 2:
         return {
           id: 2,
-          name: 'Yoshi',
+          name: 'Yoshi 🦖',
           speed: 'slow',
-          acceleration: 'fast'
+          acceleration: 'fast',
+          favoriteTrack: 2
         };
       case 3:
         return {
           id: 3,
-          name: 'Bowser',
+          name: 'Bowser 👹',
           speed: 'fast',
-          acceleration: 'slow'
+          acceleration: 'slow',
+          favoriteTrack: 3
         };
       default:
         return undefined;
     }
+  }
+
+  lookupTrack(player: Player): Track {
+    const tracks = [
+      { id: 1, name: 'Mario Raceway' },
+      { id: 2, name: 'Yoshi Valley' },
+      { id: 3, name: 'Bowser\'s Castle' }
+    ];
+    return tracks.find(track => player.favoriteTrack === track.id);
   }
 
 }

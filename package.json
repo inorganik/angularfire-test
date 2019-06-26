@@ -7,7 +7,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build": "ng build && npm run copy:hosting && npm run build:ssr",
+    "build": "ng build --prod && npm run copy:hosting && npm run build:ssr && npm run prerender:ssr",
     "copy:hosting": "cp -r ./dist/angularfire-test/* ./public && rm -f ./public/index.html",
     "build:functions": "npm run --prefix functions build",
     "build:ssr": "ng run angularfire-test:server && npm run webpack:ssr",
