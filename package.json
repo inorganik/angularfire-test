@@ -7,12 +7,13 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build": "ng build && npm run copy:hosting && npm run build:ssr && npm run build:functions",
+    "build": "ng build && npm run copy:hosting && npm run build:ssr",
     "copy:hosting": "cp -r ./dist/angularfire-test/* ./public && rm -f ./public/index.html",
     "build:functions": "npm run --prefix functions build",
     "build:ssr": "ng run angularfire-test:server && npm run webpack:ssr",
     "webpack:ssr": "webpack --config webpack.server.config.js",
-    "serve:ssr": "node dist/angularfire-test-webpack/server.js"
+    "serve:ssr": "node dist/angularfire-test-webpack/server.js",
+    "prerender:ssr": "PRERENDER=1 node dist/angularfire-test-webpack/server.js"
   },
   "private": true,
   "dependencies": {

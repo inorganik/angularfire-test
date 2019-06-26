@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { isPlatformServer } from '@angular/common';
 
 export interface Player {
   id: number;
@@ -36,17 +36,13 @@ export class PlayerComponent implements OnInit {
         const id = parseFloat(params.get('id'));
         if (this.transferState.hasKey(PLAYER_STATE)) {
           // check if transfer state already looked up player
-          if (isPlatformBrowser(this.platformId)) {
-            console.log('from transfer state');
-          }
+          console.log('data from transfer state');
           const player = this.transferState.get<Player>(PLAYER_STATE, null);
           this.transferState.remove(PLAYER_STATE);
           return of(player);
         } else {
           // lookup player
-          if (isPlatformBrowser(this.platformId)) {
-            console.log('re-rendered');
-          }
+          console.log('data re-fetched');
           return of(this.lookupPlayer(id));
         }
       }),
@@ -55,6 +51,7 @@ export class PlayerComponent implements OnInit {
           this.error = 'Player not found';
         } else {
           if (isPlatformServer(this.platformId)) {
+            console.log('SERVER: set transfer state');
             this.transferState.set(PLAYER_STATE, player);
           }
         }
@@ -75,7 +72,7 @@ export class PlayerComponent implements OnInit {
         return {
           id: 2,
           name: 'Yoshi',
-          speed: 'medium',
+          speed: 'slow',
           acceleration: 'fast'
         };
       case 3:
