@@ -9,8 +9,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 ## Build
 
 ```
-npm run build:ssr
-npm run prerender:ssr
+npm run build
 ```
 
 At this point, you can serve with node:
