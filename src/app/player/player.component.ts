@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap, tap, shareReplay } from 'rxjs/operators';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { isPlatformServer } from '@angular/common';
@@ -51,7 +51,7 @@ export class PlayerComponent implements OnInit {
         } else {
           // lookup player
           console.log('fetch data');
-          return of(this.lookupPlayer(id));
+          return this.lookupPlayer(id);
         }
       }),
       tap((player: Player) => {
@@ -63,7 +63,8 @@ export class PlayerComponent implements OnInit {
             this.transferState.set(PLAYER_STATE, player);
           }
         }
-      })
+      }),
+      shareReplay(1)
     );
 
     this.track$ = this.player$.pipe(
@@ -73,7 +74,7 @@ export class PlayerComponent implements OnInit {
           this.transferState.remove(TRACK_STATE);
           return of(track);
         } else {
-          return of(this.lookupTrack(player));
+          return this.lookupTrack(player);
         }
       }),
       tap((track: Track) => {
@@ -86,47 +87,56 @@ export class PlayerComponent implements OnInit {
           }
         }
       })
-    )
+    );
   }
 
-  lookupPlayer(id: number): Player {
-    switch (id) {
-      case 1:
-        return {
-          id: 1,
-          name: 'Mario 👲🏻',
-          speed: 'medium',
-          acceleration: 'medium',
-          favoriteTrack: 1
-        };
-      case 2:
-        return {
-          id: 2,
-          name: 'Yoshi 🦖',
-          speed: 'slow',
-          acceleration: 'fast',
-          favoriteTrack: 2
-        };
-      case 3:
-        return {
-          id: 3,
-          name: 'Bowser 👹',
-          speed: 'fast',
-          acceleration: 'slow',
-          favoriteTrack: 3
-        };
-      default:
-        return undefined;
-    }
+  lookupPlayer(id: number): Promise<Player> {
+    return new Promise((resolve, reject) => {
+      let player;
+      switch (id) {
+        case 1:
+          player = {
+            id: 1,
+            name: 'Mario 👲🏻',
+            speed: 'medium',
+            acceleration: 'medium',
+            favoriteTrack: 1
+          };
+          break;
+        case 2:
+          player = {
+            id: 2,
+            name: 'Yoshi 🦖',
+            speed: 'slow',
+            acceleration: 'fast',
+            favoriteTrack: 2
+          };
+          break;
+        case 3:
+          player = {
+            id: 3,
+            name: 'Bowser 👹',
+            speed: 'fast',
+            acceleration: 'slow',
+            favoriteTrack: 3
+          };
+          break;
+        default:
+          player = undefined;
+        }
+      resolve(player);
+    });
   }
 
-  lookupTrack(player: Player): Track {
+  lookupTrack(player: Player): Promise<Track> {
     const tracks = [
       { id: 1, name: 'Mario Raceway' },
       { id: 2, name: 'Yoshi Valley' },
       { id: 3, name: 'Bowser\'s Castle' }
     ];
-    return tracks.find(track => player.favoriteTrack === track.id);
+    return new Promise((resolve, reject) => {
+      resolve(tracks.find(track => player.favoriteTrack === track.id));
+    });
   }
 
 }
